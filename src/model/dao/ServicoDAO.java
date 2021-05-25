@@ -29,7 +29,7 @@ public class ServicoDAO {
         ResultSet rs = null;
 
         try {
-            stmt = con.prepareStatement("INSERT INTO servico(nome_empresa,nome_responsavel,telefone,celular,rua,numero,bairro,referencia,complemento,data_servico,valor,descricao)VALUES(?,?,?,?,?,?,?,?,?,?,?,?)");
+            stmt = con.prepareStatement("INSERT INTO servico(nome_empresa,nome_responsavel,telefone,celular,rua,numero,bairro,referencia,complemento,data_servico,valor,descricao,data_vencimento)VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)");
             stmt.setString(1, s.getNome_empresa());
             stmt.setString(2, s.getNome_responsavel());
             stmt.setString(3, s.getTelefone());
@@ -42,17 +42,18 @@ public class ServicoDAO {
             stmt.setString(10, s.formataDataRetornaBDServico(s.getData_servico()));
             stmt.setString(11, s.getValor());
             stmt.setString(12, s.getDescricao());
-
+            stmt.setString(13, s.formataDataRetornaBDVencimento(s.getData_vencimento()));
             if (stmt.executeUpdate() > 0) {
                 rs = stmt.getGeneratedKeys();
-                while (rs.next()) {
-                    s.setId(rs.getInt(1));
-                    stmt = con.prepareStatement("UPDATE servico set data_vencimento = date(servico.data_servico, '+90 day') WHERE id = ?");
-                    stmt.setInt(1, s.getId());
-                    s.setMensagem("Cadastro realizado com sucesso");
-                    stmt.executeUpdate();
-                }
-//                JOptionPane.showMessageDialog(null, "Salvo com sucesso");
+//                while (rs.next()) {
+//                    s.setId(rs.getInt(1));
+//                    stmt = con.prepareStatement("UPDATE servico set data_vencimento = ?  WHERE id = ?");
+//                    stmt.setString(1, "date(servico.data_servico, '+" + s.getData_vencimento() + " day')");
+//                    stmt.setInt(2, s.getId());
+//                    stmt.executeUpdate();
+//                }
+                s.setMensagem("Cadastro realizado com sucesso");
+                JOptionPane.showMessageDialog(null, "<html><font color=#0E6B19>" + s.getMensagem() + "</font></html>");
             }
 
         } catch (SQLException ex) {
@@ -177,7 +178,7 @@ public class ServicoDAO {
         PreparedStatement stmt = null;
 
         try {
-            stmt = con.prepareStatement("UPDATE servico SET nome_empresa = ?,nome_responsavel = ?,telefone = ?,celular = ?, rua = ?,numero = ?, bairro = ?, referencia = ?, complemento = ?, data_servico = ?, valor = ?, descricao = ? WHERE id = ?");
+            stmt = con.prepareStatement("UPDATE servico SET nome_empresa = ?,nome_responsavel = ?,telefone = ?,celular = ?, rua = ?,numero = ?, bairro = ?, referencia = ?, complemento = ?, data_servico = ?, valor = ?, descricao = ?, data_vencimento = ? WHERE id = ?");
             stmt.setString(1, s.getNome_empresa());
             stmt.setString(2, s.getNome_responsavel());
             stmt.setString(3, s.getTelefone());
@@ -190,18 +191,18 @@ public class ServicoDAO {
             stmt.setString(10, (s.formataDataRetornaBDServico(s.getData_servico())));
             stmt.setString(11, s.getValor());
             stmt.setString(12, s.getDescricao());
-            stmt.setInt(13, s.getId());
+            stmt.setString(13, (s.formataDataRetornaBDVencimento(s.getData_vencimento())));
+            stmt.setInt(14, s.getId());
 
             if (stmt.executeUpdate() > 0) {
-                
+
 ////                    s.setId(rs.getInt(1));
 //                    System.out.println(s.getId());
-                    stmt = con.prepareStatement("UPDATE servico set data_vencimento = date(servico.data_servico, '+90 day') WHERE id = ?");
-                    stmt.setInt(1, s.getId());
-                    stmt.executeUpdate();
-                    s.setMensagem("Servico atualizado com sucesso");
-                
-//                JOptionPane.showMessageDialog(null, "Salvo com sucesso");
+//                stmt = con.prepareStatement("UPDATE servico set data_vencimento = date(servico.data_servico, '+90 day') WHERE id = ?");
+//                stmt.setInt(1, s.getId());
+//                stmt.executeUpdate();
+                s.setMensagem("Servico atualizado com sucesso");
+                JOptionPane.showMessageDialog(null, "<html><font color=#0E6B19>" + s.getMensagem() + "</font></html>");
             }
 //            System.out.println(s.getId());
 
@@ -288,7 +289,7 @@ public class ServicoDAO {
                 faltaDias = (rs.getInt("dias"));
 
             }
-            
+
             if (faltaDias <= 5) {
 
                 df = new SimpleDateFormat("yyyy-MM-dd");
@@ -303,7 +304,6 @@ public class ServicoDAO {
 
                     servicos.add(servico);
                 }
-
 
             } else {
                 System.out.println("diferente");

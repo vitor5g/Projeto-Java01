@@ -206,4 +206,26 @@ public class Servico {
         this.descricao = descricao;
     }
 
+    @Override
+    public String toString() {
+        return "Servico{" + "id=" + id + "\n"
+                + "nome_empresa=" + nome_empresa + "\n"
+                + "\n nome_responsavel=" + nome_responsavel + "\n"
+                + "telefone=" + telefone + "\n"
+                + "celular=" + celular + "\n"
+                + "rua=" + rua + "\n"
+                + " numero=" + numero + "\n"
+                + "bairro=" + bairro + "\n"
+                + "referencia=" + referencia + "\n"
+                + "complemento=" + complemento + "\n"
+                + "data_servico=" + data_servico + "\n"
+                + "valor=" + valor + "\n"
+                + "descricao=" + descricao + "\n"
+                + "mensagem=" + mensagem + "\n"
+                + "data_vencimento=" + data_vencimento + "\n"
+                + "total_servicos=" + total_servicos + '}';
+    }
+    
+    
+
 }

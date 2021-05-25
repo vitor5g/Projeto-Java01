@@ -2,15 +2,20 @@ package view;
 
 import java.awt.Color;
 import java.awt.event.KeyEvent;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
 import model.bean.MascaraMoeda;
 import model.bean.Servico;
 import model.dao.ServicoDAO;
@@ -35,11 +40,33 @@ public class AlterarServico extends javax.swing.JFrame {
             txtDescricao.setLineWrap(true);
 //            txtTeste = new JFormattedTextField(8);
 
+            /*Defino os dias da validade*/
+            txtDataVencimento30.setActionCommand("30");
+            txtDataVencimento60.setActionCommand("60");
+            txtDataVencimento90.setActionCommand("90");
+
+            txtJCalendar.getJCalendar().getDayChooser().addPropertyChangeListener("day", new PropertyChangeListener() {
+                @Override
+                public void propertyChange(PropertyChangeEvent pce) {
+                    SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                    Calendar c = Calendar.getInstance();
+                    c.setTime(txtJCalendar.getDate());
+                    c.add(Calendar.DATE, Integer.parseInt(buttonGroup.getSelection().getActionCommand().trim()));
+                    String data_vencimento = (String) sdf.format(c.getTime());
+                    txtDataVencimento.setText(data_vencimento);
+                    txtDataVencimento.setEditable(false);
+                }
+            });
+
+            long diffInMillies = 0;
+            long diffDays = 0;
+
             for (Servico s : ServicoDAO.readId(Servico.getId_pesquisa())) {
 
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
 //                String calendario = sdf.format(txtJCalendar.getDate());
-                Date data = (Date) sdf.parse(s.getData_servico());
+                Date data_servico = (Date) sdf.parse(s.getData_servico());
+                Date data_vencimento = (Date) sdf.parse(s.getData_vencimento());
 //                ServicoDAO.readId(Servico.getId_pesquisa());
                 txtNumeroServico.setText(Integer.toString(s.getId()));
                 txtNomeEmpresa.setText(s.getNome_empresa());
@@ -54,18 +81,26 @@ public class AlterarServico extends javax.swing.JFrame {
                 txtTelefone.setText(s.getTelefone());
                 txtValor.setText(s.getValor());
                 txtNomeResponsavel.setText(s.getNome_responsavel());
-//                    s.getNome()
-//                ,
-//                    s.getQtd()
-//                ,
-//                    s.getValidade()
-//                ,
-//                    s.getPreco()
-            }//        readJTable();
+                txtDataVencimento.setText(s.getData_vencimento());
+
+                diffInMillies = Math.abs(data_vencimento.getTime() - data_servico.getTime());
+                diffDays = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+
+            }
+
+            if (diffDays == 30) {
+                txtDataVencimento30.setSelected(true);
+            } else if (diffDays == 60) {
+                txtDataVencimento60.setSelected(true);
+            } else if (diffDays == 90) {
+                txtDataVencimento90.setSelected(true);
+            }
+
         } catch (ParseException ex) {
             Logger.getLogger(AlterarServico.class.getName()).log(Level.SEVERE, null, ex);
         }
         txtNumeroServico.setEditable(false);
+        txtDataVencimento.setEditable(false);
 
         //        DefaultTableModel modelo = (DefaultTableModel) jTProdutos.getModel();
 //        jTProdutos.setRowSorter(new TableRowSorter(modelo));
@@ -83,6 +118,7 @@ public class AlterarServico extends javax.swing.JFrame {
 
         jScrollPane1 = new javax.swing.JScrollPane();
         jTextArea1 = new javax.swing.JTextArea();
+        buttonGroup = new javax.swing.ButtonGroup();
         jLabel15 = new javax.swing.JLabel();
         jLabel16 = new javax.swing.JLabel();
         jLabel17 = new javax.swing.JLabel();
@@ -121,6 +157,11 @@ public class AlterarServico extends javax.swing.JFrame {
         jLabel33 = new javax.swing.JLabel();
         txtTelefone = new javax.swing.JFormattedTextField();
         txtCelular = new javax.swing.JFormattedTextField();
+        txtDataVencimento = new javax.swing.JTextField();
+        jLabel34 = new javax.swing.JLabel();
+        txtDataVencimento30 = new javax.swing.JRadioButton();
+        txtDataVencimento60 = new javax.swing.JRadioButton();
+        txtDataVencimento90 = new javax.swing.JRadioButton();
 
         jTextArea1.setColumns(20);
         jTextArea1.setRows(5);
@@ -295,6 +336,43 @@ public class AlterarServico extends javax.swing.JFrame {
         }
         txtCelular.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
 
+        txtDataVencimento.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        txtDataVencimento.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtDataVencimentoActionPerformed(evt);
+            }
+        });
+
+        jLabel34.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        jLabel34.setText("Validade do Serviço");
+
+        buttonGroup.add(txtDataVencimento30);
+        txtDataVencimento30.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        txtDataVencimento30.setText("30 dias");
+        txtDataVencimento30.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtDataVencimento30ActionPerformed(evt);
+            }
+        });
+
+        buttonGroup.add(txtDataVencimento60);
+        txtDataVencimento60.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        txtDataVencimento60.setText("60 dias");
+        txtDataVencimento60.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtDataVencimento60ActionPerformed(evt);
+            }
+        });
+
+        buttonGroup.add(txtDataVencimento90);
+        txtDataVencimento90.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        txtDataVencimento90.setText("90 dias");
+        txtDataVencimento90.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtDataVencimento90ActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -358,32 +436,46 @@ public class AlterarServico extends javax.swing.JFrame {
                         .addComponent(txtReferencia, javax.swing.GroupLayout.PREFERRED_SIZE, 244, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(146, 146, 146)
-                        .addComponent(jLabel28)
-                        .addGap(1, 1, 1)
-                        .addComponent(jLabel32)
-                        .addGap(12, 12, 12)
-                        .addComponent(txtJCalendar, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(45, 45, 45)
-                        .addComponent(jLabel29)
-                        .addGap(3, 3, 3)
-                        .addComponent(jLabel33)
-                        .addGap(10, 10, 10)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addComponent(txtValor, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel28)
+                                .addGap(1, 1, 1)
+                                .addComponent(jLabel32)
+                                .addGap(12, 12, 12)
+                                .addComponent(txtJCalendar, javax.swing.GroupLayout.PREFERRED_SIZE, 151, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(45, 45, 45)
+                                .addComponent(jLabel29)
+                                .addGap(3, 3, 3)
+                                .addComponent(jLabel33)
+                                .addGap(10, 10, 10)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addComponent(txtValor, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                            .addGroup(layout.createSequentialGroup()
+                                .addComponent(jLabel34)
+                                .addGap(22, 22, 22)
+                                .addComponent(txtDataVencimento30)
+                                .addGap(18, 18, 18)
+                                .addComponent(txtDataVencimento60)
+                                .addGap(27, 27, 27)
+                                .addComponent(txtDataVencimento90, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(txtDataVencimento, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                .addGap(10, 10, 10))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(146, 146, 146)
                         .addComponent(jLabel27)
                         .addGap(10, 10, 10)
                         .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 475, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(300, 300, 300)
+                        .addGap(154, 154, 154)
                         .addComponent(btnAtualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(91, 91, 91)
                         .addComponent(btnVoltar, javax.swing.GroupLayout.PREFERRED_SIZE, 94, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addGap(57, 57, 57)
                         .addComponent(lblMensagem, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(10, 10, 10))
+                .addGap(69, 69, 69))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -480,7 +572,14 @@ public class AlterarServico extends javax.swing.JFrame {
                             .addGroup(layout.createSequentialGroup()
                                 .addGap(4, 4, 4)
                                 .addComponent(txtValor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addGap(27, 27, 27)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 27, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel34)
+                    .addComponent(txtDataVencimento30)
+                    .addComponent(txtDataVencimento60)
+                    .addComponent(txtDataVencimento90)
+                    .addComponent(txtDataVencimento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(49, 49, 49)
@@ -491,7 +590,7 @@ public class AlterarServico extends javax.swing.JFrame {
                     .addComponent(btnAtualizar, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnVoltar, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(lblMensagem, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addContainerGap())
         );
 
         pack();
@@ -524,7 +623,14 @@ public class AlterarServico extends javax.swing.JFrame {
                 SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
                 String calendario = (String) sdf.format(txtJCalendar.getDate());
 
-                /*Verifico se o usuario digitou , no valor*/
+                /*Formato e adicioo os dias para a validade do serviço*/
+                Calendar c = Calendar.getInstance();
+                c.setTime(txtJCalendar.getDate());
+                c.add(Calendar.DATE, Integer.parseInt(buttonGroup.getSelection().getActionCommand().trim()));
+                String data_vencimento = (String) sdf.format(c.getTime());
+                /**/
+
+ /*Verifico se o usuario digitou , no valor*/
                 if (txtValor.getText().toLowerCase().contains(",")) {
 
                     String novoValor = txtValor.getText().replace(',', '.');
@@ -539,15 +645,14 @@ public class AlterarServico extends javax.swing.JFrame {
                     s.setComplemento(txtComplemento.getText().trim());
                     s.setReferencia(txtReferencia.getText().trim());
                     s.setData_servico(calendario.trim());
+                    s.setData_vencimento(data_vencimento.trim());
                     s.setDescricao(txtDescricao.getText().trim());
                     s.setValor(novoValor.trim());
 
                     ServicoDAO.update(s);
-                    JOptionPane.showMessageDialog(null, "<html><font color=#0E6B19>" + s.getMensagem() + "</font></html>");
-//                    ConsultaServico novaTela = new ConsultaServico();
-                    
+//                    JOptionPane.showMessageDialog(null, "<html><font color=#0E6B19>" + s.getMensagem() + "</font></html>");
+
                     dispose();
-//                    dispose();
 
                     for (Servico s2 : ServicoDAO.readId(Servico.getId_pesquisa())) {
 
@@ -568,27 +673,9 @@ public class AlterarServico extends javax.swing.JFrame {
                         txtTelefone.setText(s2.getTelefone());
                         txtValor.setText(s2.getValor());
                         txtNomeResponsavel.setText(s2.getNome_responsavel());
+                        txtDataVencimento.setText(s.getData_vencimento());
 
-//                    s.getNome()
-//                ,
-//                    s.getQtd()
-//                ,
-//                    s.getValidade()
-//                ,
-//                    s.getPreco()
-                    }//
-                    /*Limpa os campos*/
-//                txtNomeEmpresa.setText("");
-//                txtNomeResponsavel.setText("");
-//                txtTelefone.setText("");
-//                txtValor.setText("");
-//                txtEndereco.setText("");
-//                txtNumero.setText("");
-//                txtBairro.setText("");
-//                txtComplemento.setText("");
-//                txtReferencia.setText("");
-//                txtJCalendar.setDateFormatString("");
-//                txtDescricao.setText("");
+                    }
                 } else {
                     s.setId(Integer.parseInt(txtNumeroServico.getText().trim()));
                     s.setNome_empresa(txtNomeEmpresa.getText().trim());
@@ -601,6 +688,7 @@ public class AlterarServico extends javax.swing.JFrame {
                     s.setComplemento(txtComplemento.getText().trim());
                     s.setReferencia(txtReferencia.getText().trim());
                     s.setData_servico(calendario.trim());
+                    s.setData_vencimento(data_vencimento.trim());
                     s.setValor(txtValor.getText().trim());
                     s.setDescricao(txtDescricao.getText().trim());
 
@@ -608,7 +696,7 @@ public class AlterarServico extends javax.swing.JFrame {
 //
 ////                lblMensagem.setForeground(Color.);
 ////                lblMensagem.setText("<html><font color=#0E6B19>" + s.getMensagem() + "</font></html>");
-                    JOptionPane.showMessageDialog(null, "<html><font color=#0E6B19>" + s.getMensagem() + "</font></html>");
+//                    JOptionPane.showMessageDialog(null, "<html><font color=#0E6B19>" + s.getMensagem() + "</font></html>");
 //                    ConsultaServico novaTela = new ConsultaServico();
 //                    novaTela.readJTable();
                     dispose();
@@ -632,31 +720,15 @@ public class AlterarServico extends javax.swing.JFrame {
                         txtTelefone.setText(s2.getTelefone());
                         txtValor.setText(s2.getValor());
                         txtNomeResponsavel.setText(s2.getNome_responsavel());
-
-//                    s.getNome()
-//                ,
-//                    s.getQtd()
-//                ,
-//                    s.getValidade()
-//                ,
-//                    s.getPreco()
-                    }//
-                    /*Limpa os campos*/
-//                txtNomeEmpresa.setText("");
-//                txtNomeResponsavel.setText("");
-//                txtTelefone.setText("");
-//                txtValor.setText("");
-//                txtEndereco.setText("");
-//                txtNumero.setText("");
-//                txtBairro.setText("");
-//                txtComplemento.setText("");
-//                txtReferencia.setText("");
-//                txtJCalendar.setDateFormatString("");
-//                txtDescricao.setText("");
+                        txtDataVencimento.setText(s.getData_vencimento());
+                    }
                 }
             } catch (ParseException ex) {
                 Logger.getLogger(AlterarServico.class.getName()).log(Level.SEVERE, null, ex);
             }
+
+            ConsultaServico novaTela = new ConsultaServico();
+            novaTela.setVisible(true);
         }
     }//GEN-LAST:event_btnAtualizarActionPerformed
 
@@ -673,44 +745,9 @@ public class AlterarServico extends javax.swing.JFrame {
     }//GEN-LAST:event_txtValorActionPerformed
 
     private void btnVoltarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVoltarActionPerformed
-//        ConsultaServico novaTela = new ConsultaServico();
-//        novaTela.setVisible(true);
         dispose();
-        //        try {
-        //            novaTela = new TelaOpcoes();
-        //        } catch (SQLException ex) {
-        //            Logger.getLogger(CadastroProduto.class.getName()).log(Level.SEVERE, null, ex);
-        //        }
-        //        novaTela.setVisible(true);
-        //        dispose();
-        //
-        //        if (enviatexto == null) {
-        //            try {
-        //                enviatexto = new TelaOpcoes();
-        //            } catch (SQLException ex) {
-        //                Logger.getLogger(TelaLogin.class.getName()).log(Level.SEVERE, null, ex);
-        //            }
-        //            enviatexto.setVisible(true);
-        //            setDefaultCloseOperation(TelaLogin.HIDE_ON_CLOSE);
-        ////            setDefaultCloseOperation(enviatexto.HIDE_ON_CLOSE);
-        //
-        //            try {
-        //                enviatexto.recebendo(getLogin(), new String(getSenha()));
-        //            } catch (SQLException ex) {
-        //                Logger.getLogger(TelaLogin.class.getName()).log(Level.SEVERE, null, ex);
-        //            }
-        //        } else {
-        //            enviatexto.setVisible(true);
-        //            enviatexto.setState(TelaOpcoes.NORMAL);
-        //            setDefaultCloseOperation(TelaLogin.HIDE_ON_CLOSE);
-        ////            setDefaultCloseOperation(enviatexto.HIDE_ON_CLOSE);
-        //
-        //            try {
-        //                enviatexto.recebendo(getLogin(), new String(getSenha()));
-        //            } catch (SQLException ex) {
-        //                Logger.getLogger(TelaLogin.class.getName()).log(Level.SEVERE, null, ex);
-        //            }
-        //        }
+        ConsultaServico novaTela = new ConsultaServico();
+        novaTela.setVisible(true);
     }//GEN-LAST:event_btnVoltarActionPerformed
 
     private void btnVoltarKeyPressed(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_btnVoltarKeyPressed
@@ -728,6 +765,41 @@ public class AlterarServico extends javax.swing.JFrame {
     private void txtValorMouseExited(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtValorMouseExited
         // TODO add your handling code here:
     }//GEN-LAST:event_txtValorMouseExited
+
+    private void txtDataVencimento30ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDataVencimento30ActionPerformed
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        Calendar c = Calendar.getInstance();
+        c.setTime(txtJCalendar.getDate());
+        c.add(Calendar.DATE, Integer.parseInt(buttonGroup.getSelection().getActionCommand().trim()));
+        String data_vencimento = (String) sdf.format(c.getTime());
+        txtDataVencimento.setText(data_vencimento);
+        txtDataVencimento.setEditable(false);
+    }//GEN-LAST:event_txtDataVencimento30ActionPerformed
+
+    private void txtDataVencimento60ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDataVencimento60ActionPerformed
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        Calendar c = Calendar.getInstance();
+        c.setTime(txtJCalendar.getDate());
+        c.add(Calendar.DATE, Integer.parseInt(buttonGroup.getSelection().getActionCommand().trim()));
+        String data_vencimento = (String) sdf.format(c.getTime());
+        txtDataVencimento.setText(data_vencimento);
+        txtDataVencimento.setEditable(false);
+    }//GEN-LAST:event_txtDataVencimento60ActionPerformed
+
+    private void txtDataVencimento90ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDataVencimento90ActionPerformed
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        Calendar c = Calendar.getInstance();
+        c.setTime(txtJCalendar.getDate());
+        c.add(Calendar.DATE, Integer.parseInt(buttonGroup.getSelection().getActionCommand().trim()));
+        String data_vencimento = (String) sdf.format(c.getTime());
+        txtDataVencimento.setText(data_vencimento);
+        txtDataVencimento.setEditable(false);
+    }//GEN-LAST:event_txtDataVencimento90ActionPerformed
+
+    private void txtDataVencimentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDataVencimentoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtDataVencimentoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -798,6 +870,7 @@ public class AlterarServico extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnAtualizar;
     private javax.swing.JButton btnVoltar;
+    private javax.swing.ButtonGroup buttonGroup;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel15;
     private javax.swing.JLabel jLabel16;
@@ -819,6 +892,7 @@ public class AlterarServico extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel31;
     private javax.swing.JLabel jLabel32;
     private javax.swing.JLabel jLabel33;
+    private javax.swing.JLabel jLabel34;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JScrollPane jScrollPane3;
     private javax.swing.JTextArea jTextArea1;
@@ -826,6 +900,10 @@ public class AlterarServico extends javax.swing.JFrame {
     private javax.swing.JTextField txtBairro;
     private javax.swing.JFormattedTextField txtCelular;
     private javax.swing.JTextField txtComplemento;
+    private javax.swing.JTextField txtDataVencimento;
+    private javax.swing.JRadioButton txtDataVencimento30;
+    private javax.swing.JRadioButton txtDataVencimento60;
+    private javax.swing.JRadioButton txtDataVencimento90;
     private javax.swing.JTextArea txtDescricao;
     private javax.swing.JTextField txtEndereco;
     private com.toedter.calendar.JDateChooser txtJCalendar;
@@ -837,11 +915,4 @@ public class AlterarServico extends javax.swing.JFrame {
     private javax.swing.JFormattedTextField txtTelefone;
     private javax.swing.JTextField txtValor;
     // End of variables declaration//GEN-END:variables
-//public void recebendo(String login, String senha) throws SQLException {
-//        setLogin(login);
-//        setSenha(senha);
-//        UsuarioDAO dao = new UsuarioDAO();
-////        lblBemVindo.setText("Olá " + dao.pesquisaNome(dao.pesquisaId(login, senha)) + ", seja bem vindo(a)!");
-//        setNome(dao.pesquisaNome(dao.pesquisaId(login, senha)));
-//    }
 }

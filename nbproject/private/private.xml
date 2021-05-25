@@ -3,10 +3,14 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
+            <file>file:/D:/Xamp/htdocs/ProjetoJava01/Projeto-Java01/src/connection/ConnectionFactory.java</file>
+            <file>file:/D:/Xamp/htdocs/ProjetoJava01/Projeto-Java01/src/view/CadastroServico.java</file>
+            <file>file:/D:/Xamp/htdocs/ProjetoJava01/Projeto-Java01/src/view/ConsultaServicoDetalhado.java</file>
             <file>file:/D:/Xamp/htdocs/ProjetoJava01/Projeto-Java01/src/view/TelaInicial.java</file>
             <file>file:/D:/Xamp/htdocs/ProjetoJava01/Projeto-Java01/src/model/dao/ServicoDAO.java</file>
             <file>file:/D:/Xamp/htdocs/ProjetoJava01/Projeto-Java01/src/view/ConsultaServico.java</file>
             <file>file:/D:/Xamp/htdocs/ProjetoJava01/Projeto-Java01/src/model/bean/Servico.java</file>
+            <file>file:/D:/Xamp/htdocs/ProjetoJava01/Projeto-Java01/src/view/AlterarServico.java</file>
         </group>
     </open-files>
 </project-private>

@@ -48,7 +48,7 @@ public class ConsultaServico extends javax.swing.JFrame {
                     s.getCelular(),
                     s.getValor(),
                     s.getData_servico(), //                    Produto.getTotalProdutos()
-                });
+                    s.getData_vencimento(),});
 
             }
         } catch (ParseException ex) {
@@ -74,7 +74,7 @@ public class ConsultaServico extends javax.swing.JFrame {
                             s.getCelular(),
                             s.getValor(),
                             s.getData_servico(), //                    Produto.getTotalProdutos()
-                        });
+                            s.getData_vencimento(),});
 
                     }
                     break;
@@ -90,7 +90,7 @@ public class ConsultaServico extends javax.swing.JFrame {
                             s.getCelular(),
                             s.getValor(),
                             s.getData_servico(), //                    Produto.getTotalProdutos()
-                        });
+                            s.getData_vencimento(),});
 
                     }
                     break;
@@ -106,7 +106,7 @@ public class ConsultaServico extends javax.swing.JFrame {
                             s.getCelular(),
                             s.getValor(),
                             s.getData_servico(), //                    Produto.getTotalProdutos()
-                        });
+                            s.getData_vencimento(),});
 
                     }
                     break;
@@ -125,6 +125,7 @@ public class ConsultaServico extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        jInternalFrame1 = new javax.swing.JInternalFrame();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTServicos = new javax.swing.JTable();
         btnDetalhar = new javax.swing.JButton();
@@ -137,6 +138,19 @@ public class ConsultaServico extends javax.swing.JFrame {
         JCEscolha = new javax.swing.JComboBox<>();
         jLabel2 = new javax.swing.JLabel();
         lblTotalServicos = new javax.swing.JLabel();
+
+        jInternalFrame1.setVisible(true);
+
+        javax.swing.GroupLayout jInternalFrame1Layout = new javax.swing.GroupLayout(jInternalFrame1.getContentPane());
+        jInternalFrame1.getContentPane().setLayout(jInternalFrame1Layout);
+        jInternalFrame1Layout.setHorizontalGroup(
+            jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
+        jInternalFrame1Layout.setVerticalGroup(
+            jInternalFrame1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 0, Short.MAX_VALUE)
+        );
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setResizable(false);
@@ -166,11 +180,11 @@ public class ConsultaServico extends javax.swing.JFrame {
 
             },
             new String [] {
-                "Nº", "Nome da Empresa", "Nome do Responsavel", "Celular", "Valor", "Data do Serviço"
+                "Nº", "Nome da Empresa", "Nome do Responsavel", "Celular", "Valor", "Data do Serviço", "Data de Validade"
             }
         ) {
             boolean[] canEdit = new boolean [] {
-                false, false, false, false, false, false
+                false, false, false, false, false, false, false
             };
 
             public boolean isCellEditable(int rowIndex, int columnIndex) {
@@ -269,35 +283,35 @@ public class ConsultaServico extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
-                .addContainerGap()
-                .addComponent(btnVoltar, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(211, 211, 211)
-                .addComponent(jLabel1)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(jLabel2)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(lblTotalServicos, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(25, 25, 25))
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(49, 49, 49)
+                .addComponent(btnDetalhar)
+                .addGap(26, 26, 26)
+                .addComponent(btnEditar)
+                .addGap(33, 33, 33)
+                .addComponent(btnExcluir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 57, Short.MAX_VALUE)
+                .addComponent(JCEscolha, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(txtBusca, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                .addComponent(btnBusca)
+                .addGap(34, 34, 34))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(49, 49, 49)
-                        .addComponent(btnDetalhar)
-                        .addGap(26, 26, 26)
-                        .addComponent(btnEditar)
-                        .addGap(33, 33, 33)
-                        .addComponent(btnExcluir, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(JCEscolha, javax.swing.GroupLayout.PREFERRED_SIZE, 177, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtBusca, javax.swing.GroupLayout.PREFERRED_SIZE, 156, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(btnBusca))
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 819, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
-                        .addContainerGap(36, Short.MAX_VALUE)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 810, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addGap(34, 34, 34))
+                        .addComponent(btnVoltar, javax.swing.GroupLayout.PREFERRED_SIZE, 82, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(211, 211, 211)
+                        .addComponent(jLabel1)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                        .addComponent(jLabel2)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addComponent(lblTotalServicos, javax.swing.GroupLayout.PREFERRED_SIZE, 42, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addGap(25, 25, 25))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -434,6 +448,7 @@ public class ConsultaServico extends javax.swing.JFrame {
     }//GEN-LAST:event_btnExcluirActionPerformed
 
     private void btnEditarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnEditarActionPerformed
+        dispose();
 
         if (jTServicos.getSelectedRow() != -1) {
 
@@ -441,13 +456,12 @@ public class ConsultaServico extends javax.swing.JFrame {
             Servico.setId_pesquisa(Integer.parseInt(jTServicos.getValueAt(jTServicos.getSelectedRow(), 0).toString()));
             AlterarServico novaTela = new AlterarServico();
             novaTela.setVisible(true);
-            novaTela.setDefaultCloseOperation(AlterarServico.DISPOSE_ON_CLOSE);
-//            dispose();
 //            novaTela.setDefaultCloseOperation(AlterarServico.DISPOSE_ON_CLOSE);
-            readJTable();
+//            novaTela.setDefaultCloseOperation(AlterarServico.DISPOSE_ON_CLOSE);
+//            readJTable();
         } else {
             JOptionPane.showMessageDialog(null, "Selecione um produto para editar.");
-            readJTable();
+//            readJTable();
 
         }
         readJTable();
@@ -547,6 +561,7 @@ public class ConsultaServico extends javax.swing.JFrame {
     private javax.swing.JButton btnEditar;
     private javax.swing.JButton btnExcluir;
     private javax.swing.JButton btnVoltar;
+    private javax.swing.JInternalFrame jInternalFrame1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JScrollPane jScrollPane1;

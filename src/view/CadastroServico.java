@@ -7,16 +7,18 @@ package view;
 
 import com.sun.glass.events.KeyEvent;
 import java.awt.Color;
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.ImageIcon;
-import javax.swing.JFormattedTextField;
 import javax.swing.JOptionPane;
-import javax.swing.text.MaskFormatter;
 import model.bean.MascaraMoeda;
 import model.bean.Servico;
 import model.dao.ServicoDAO;
@@ -38,23 +40,39 @@ public class CadastroServico extends javax.swing.JFrame {
         txtDescricao.setLineWrap(true);
         txtDescricao.setWrapStyleWord(true);
 
+        /*Defino os dias da validade*/
+        txtDataVencimento30.setActionCommand("30");
+        txtDataVencimento60.setActionCommand("60");
+        txtDataVencimento90.setActionCommand("90");
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        txtJCalendar.setDate(new Date());
+        Calendar c = Calendar.getInstance();
+        c.setTime(txtJCalendar.getDate());
+        c.add(Calendar.DATE, Integer.parseInt(buttonGroup.getSelection().getActionCommand().trim()));
+        String data_vencimento = (String) sdf.format(c.getTime());
+        txtDataVencimento.setText(data_vencimento);
+        txtDataVencimento.setEditable(false);
+
+        txtJCalendar.getJCalendar().getDayChooser().addPropertyChangeListener("day", new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent pce) {
+                SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+                Calendar c = Calendar.getInstance();
+                c.setTime(txtJCalendar.getDate());
+                c.add(Calendar.DATE, Integer.parseInt(buttonGroup.getSelection().getActionCommand().trim()));
+                String data_vencimento = (String) sdf.format(c.getTime());
+                txtDataVencimento.setText(data_vencimento);
+                txtDataVencimento.setEditable(false);
+            }
+        });
+
         //txtTeste = new JFormattedTextField(8);
         txtValor.setDocument(new MascaraMoeda.MonetarioDocument());
 
         //this.setIconImage(new ImageIcon(getClass().getResource("/imagens/box32.png")).getImage());
     }
 
-//    public void readJTable(){
-//        ProdutoDAO pdao = new ProdutoDAO();
-//        
-//        for(Produto p: pdao.read()){
-//            
-//            
-//            
-//            
-//            
-//        }
-//    }
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -67,6 +85,7 @@ public class CadastroServico extends javax.swing.JFrame {
         jFrame1 = new javax.swing.JFrame();
         jLabel16 = new javax.swing.JLabel();
         jFormattedTextField1 = new javax.swing.JFormattedTextField();
+        buttonGroup = new javax.swing.ButtonGroup();
         btnCadastro = new javax.swing.JButton();
         jLabel1 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
@@ -104,6 +123,11 @@ public class CadastroServico extends javax.swing.JFrame {
         jLabel21 = new javax.swing.JLabel();
         txtCelular = new javax.swing.JFormattedTextField();
         txtValor = new javax.swing.JTextField();
+        jLabel22 = new javax.swing.JLabel();
+        txtDataVencimento30 = new javax.swing.JRadioButton();
+        txtDataVencimento60 = new javax.swing.JRadioButton();
+        txtDataVencimento90 = new javax.swing.JRadioButton();
+        txtDataVencimento = new javax.swing.JTextField();
 
         javax.swing.GroupLayout jFrame1Layout = new javax.swing.GroupLayout(jFrame1.getContentPane());
         jFrame1.getContentPane().setLayout(jFrame1Layout);
@@ -315,6 +339,39 @@ public class CadastroServico extends javax.swing.JFrame {
         txtValor.setHorizontalAlignment(javax.swing.JTextField.RIGHT);
         txtValor.setMinimumSize(new java.awt.Dimension(6, 22));
 
+        jLabel22.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        jLabel22.setText("Validade do Serviço");
+
+        buttonGroup.add(txtDataVencimento30);
+        txtDataVencimento30.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        txtDataVencimento30.setSelected(true);
+        txtDataVencimento30.setText("30 dias");
+        txtDataVencimento30.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtDataVencimento30ActionPerformed(evt);
+            }
+        });
+
+        buttonGroup.add(txtDataVencimento60);
+        txtDataVencimento60.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        txtDataVencimento60.setText("60 dias");
+        txtDataVencimento60.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtDataVencimento60ActionPerformed(evt);
+            }
+        });
+
+        buttonGroup.add(txtDataVencimento90);
+        txtDataVencimento90.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        txtDataVencimento90.setText("90 dias");
+
+        txtDataVencimento.setFont(new java.awt.Font("Arial", 0, 12)); // NOI18N
+        txtDataVencimento.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                txtDataVencimentoActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
@@ -322,40 +379,35 @@ public class CadastroServico extends javax.swing.JFrame {
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 530, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
                         .addGap(294, 294, 294)
                         .addComponent(jLabel2))
                     .addGroup(layout.createSequentialGroup()
                         .addContainerGap()
-                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                             .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                 .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(4, 4, 4)
+                                    .addComponent(txtTelefone, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(23, 23, 23)
+                                    .addComponent(jLabel12)
+                                    .addGap(20, 20, 20)
+                                    .addComponent(txtCelular, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(33, 33, 33)
+                                    .addComponent(jLabel4)
+                                    .addGap(7, 7, 7)
+                                    .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(10, 10, 10)
+                                    .addComponent(txtEndereco, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGap(19, 19, 19)
+                                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                         .addGroup(layout.createSequentialGroup()
-                                            .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addGap(4, 4, 4)
-                                            .addComponent(txtTelefone, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addGap(23, 23, 23)
-                                            .addComponent(jLabel12)
-                                            .addGap(20, 20, 20)
-                                            .addComponent(txtCelular, javax.swing.GroupLayout.PREFERRED_SIZE, 127, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addGap(33, 33, 33)
-                                            .addComponent(jLabel4)
-                                            .addGap(7, 7, 7)
-                                            .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                                             .addGap(10, 10, 10)
-                                            .addComponent(txtEndereco, javax.swing.GroupLayout.PREFERRED_SIZE, 211, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addGap(19, 19, 19)
-                                            .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                                .addGroup(layout.createSequentialGroup()
-                                                    .addGap(10, 10, 10)
-                                                    .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                                .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addComponent(btnVoltar, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addGap(242, 242, 242))
-                                        .addGroup(layout.createSequentialGroup()
-                                            .addComponent(lblMensagem, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addGap(10, 10, 10)))
+                                            .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                        .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 20, javax.swing.GroupLayout.PREFERRED_SIZE))
                                     .addComponent(txtNumero, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
                                 .addGroup(layout.createSequentialGroup()
                                     .addGap(8, 8, 8)
@@ -373,26 +425,6 @@ public class CadastroServico extends javax.swing.JFrame {
                                     .addGap(10, 10, 10)
                                     .addComponent(txtReferencia, javax.swing.GroupLayout.PREFERRED_SIZE, 220, javax.swing.GroupLayout.PREFERRED_SIZE)))
                             .addGroup(layout.createSequentialGroup()
-                                .addGap(72, 72, 72)
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(scrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 503, javax.swing.GroupLayout.PREFERRED_SIZE))
-                                    .addGroup(layout.createSequentialGroup()
-                                        .addComponent(jLabel6)
-                                        .addGap(4, 4, 4)
-                                        .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(10, 10, 10)
-                                        .addComponent(txtJCalendar, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(70, 70, 70)
-                                        .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(19, 19, 19)
-                                        .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                            .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                            .addComponent(txtValor, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                            .addGroup(layout.createSequentialGroup()
                                 .addComponent(jLabel5, javax.swing.GroupLayout.PREFERRED_SIZE, 130, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(10, 10, 10)
                                 .addComponent(txtNomeEmpresa, javax.swing.GroupLayout.PREFERRED_SIZE, 268, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -401,22 +433,55 @@ public class CadastroServico extends javax.swing.JFrame {
                                 .addGap(10, 10, 10)
                                 .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addGap(10, 10, 10)
-                                .addComponent(txtNomeResponsavel, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap())
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap()
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 530, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(150, 150, 150))
-                    .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                        .addComponent(btnCadastro, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(462, 462, 462))))
+                                .addComponent(txtNomeResponsavel, javax.swing.GroupLayout.PREFERRED_SIZE, 251, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(layout.createSequentialGroup()
+                                .addGap(72, 72, 72)
+                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGap(169, 169, 169)
+                                        .addComponent(btnCadastro, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addGap(101, 101, 101)
+                                        .addComponent(btnVoltar, javax.swing.GroupLayout.PREFERRED_SIZE, 88, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                                        .addComponent(lblMensagem, javax.swing.GroupLayout.PREFERRED_SIZE, 181, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addGroup(layout.createSequentialGroup()
+                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jLabel11, javax.swing.GroupLayout.PREFERRED_SIZE, 90, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                .addComponent(scrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 503, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                            .addGroup(layout.createSequentialGroup()
+                                                .addComponent(jLabel6)
+                                                .addGap(4, 4, 4)
+                                                .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                .addGap(10, 10, 10)
+                                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                    .addGroup(layout.createSequentialGroup()
+                                                        .addComponent(txtJCalendar, javax.swing.GroupLayout.PREFERRED_SIZE, 170, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addGap(70, 70, 70)
+                                                        .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addGap(19, 19, 19)
+                                                        .addComponent(jLabel18, javax.swing.GroupLayout.PREFERRED_SIZE, 10, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                                            .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 30, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                            .addComponent(txtValor, javax.swing.GroupLayout.PREFERRED_SIZE, 143, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                                    .addGroup(layout.createSequentialGroup()
+                                                        .addComponent(jLabel22)
+                                                        .addGap(22, 22, 22)
+                                                        .addComponent(txtDataVencimento30)
+                                                        .addGap(18, 18, 18)
+                                                        .addComponent(txtDataVencimento60)
+                                                        .addGap(27, 27, 27)
+                                                        .addComponent(txtDataVencimento90, javax.swing.GroupLayout.PREFERRED_SIZE, 81, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                                        .addComponent(txtDataVencimento, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                                        .addGap(143, 143, 143)))))))
+                .addContainerGap(13, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(15, Short.MAX_VALUE)
                 .addComponent(jLabel14, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
                 .addComponent(jLabel2)
@@ -470,20 +535,26 @@ public class CadastroServico extends javax.swing.JFrame {
                             .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtValor, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(29, 29, 29)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                    .addComponent(jLabel22)
+                    .addComponent(txtDataVencimento30)
+                    .addComponent(txtDataVencimento60)
+                    .addComponent(txtDataVencimento90)
+                    .addComponent(txtDataVencimento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(24, 24, 24)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(68, 68, 68)
+                        .addGap(50, 50, 50)
                         .addComponent(jLabel11))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(18, 18, 18)
-                        .addComponent(scrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                    .addComponent(scrollPane, javax.swing.GroupLayout.PREFERRED_SIZE, 110, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                         .addComponent(btnCadastro, javax.swing.GroupLayout.Alignment.TRAILING)
                         .addComponent(btnVoltar, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(lblMensagem, javax.swing.GroupLayout.PREFERRED_SIZE, 32, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(21, 21, 21))
+                .addContainerGap())
         );
 
         pack();
@@ -516,7 +587,13 @@ public class CadastroServico extends javax.swing.JFrame {
             SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
             String calendario = (String) sdf.format(txtJCalendar.getDate());
 
-            /*Verifico se o usuario digitou , no valor*/
+            /*Formato e adicioo os dias para a validade do serviço*/
+            Calendar c = Calendar.getInstance();
+            c.setTime(txtJCalendar.getDate());
+            c.add(Calendar.DATE, Integer.parseInt(buttonGroup.getSelection().getActionCommand().trim()));
+            String data_vencimento = (String) sdf.format(c.getTime());
+            /**/
+ /*Verifico se o usuario digitou , no valor*/
             if (txtValor.getText().toLowerCase().contains(",")) {
 
                 try {
@@ -533,13 +610,14 @@ public class CadastroServico extends javax.swing.JFrame {
                         s.setComplemento(txtComplemento.getText().trim());
                         s.setReferencia(txtReferencia.getText().trim());
                         s.setData_servico(calendario.trim());
+                        s.setData_vencimento(data_vencimento.trim());
                         s.setDescricao(txtDescricao.getText().trim());
                         s.setValor(novoValor.trim());
 
                         ServicoDAO.cadastrar(s);
 
 //                lblMensagem.setForeground(Color.green);
-                        JOptionPane.showMessageDialog(null, "<html><font color=#0E6B19>" + s.getMensagem() + "</font></html>");
+//                        JOptionPane.showMessageDialog(null, "<html><font color=#0E6B19>" + s.getMensagem() + "</font></html>");
 
 
                         /*Limpa os campos*/
@@ -555,6 +633,7 @@ public class CadastroServico extends javax.swing.JFrame {
                         txtReferencia.setText("");
                         txtJCalendar.setDate(null);
                         txtDescricao.setText("");
+                        buttonGroup.clearSelection();
                     } catch (ParseException ex) {
                         Logger.getLogger(CadastroServico.class.getName()).log(Level.SEVERE, null, ex);
                     }
@@ -580,6 +659,7 @@ public class CadastroServico extends javax.swing.JFrame {
                     s.setComplemento(txtComplemento.getText().trim());
                     s.setReferencia(txtReferencia.getText().trim());
                     s.setData_servico(calendario.trim());
+                    s.setData_vencimento(data_vencimento.trim());
                     s.setValor(txtValor.getText().trim());
                     s.setDescricao(txtDescricao.getText().trim());
 
@@ -587,7 +667,7 @@ public class CadastroServico extends javax.swing.JFrame {
 
 //                lblMensagem.setForeground(Color.);
 //                lblMensagem.setText("<html><font color=#0E6B19>" + s.getMensagem() + "</font></html>");
-                    JOptionPane.showMessageDialog(null, "<html><font color=#0E6B19>" + s.getMensagem() + "</font></html>");
+//                    JOptionPane.showMessageDialog(null, "<html><font color=#0E6B19>" + s.getMensagem() + "</font></html>");
 
                     /*Limpa os campos*/
                     txtNomeEmpresa.setText("");
@@ -601,6 +681,7 @@ public class CadastroServico extends javax.swing.JFrame {
                     txtReferencia.setText("");
                     txtJCalendar.setDate(null);
                     txtDescricao.setText("");
+                    buttonGroup.clearSelection();
                 } catch (ParseException ex) {
                     Logger.getLogger(CadastroServico.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -662,6 +743,31 @@ public class CadastroServico extends javax.swing.JFrame {
     private void txtNomeEmpresaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtNomeEmpresaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtNomeEmpresaActionPerformed
+
+    private void txtDataVencimento30ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDataVencimento30ActionPerformed
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        Calendar c = Calendar.getInstance();
+        c.setTime(txtJCalendar.getDate());
+        c.add(Calendar.DATE, Integer.parseInt(buttonGroup.getSelection().getActionCommand().trim()));
+        String data_vencimento = (String) sdf.format(c.getTime());
+        txtDataVencimento.setText(data_vencimento);
+        txtDataVencimento.setEditable(false);
+    }//GEN-LAST:event_txtDataVencimento30ActionPerformed
+
+    private void txtDataVencimento60ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDataVencimento60ActionPerformed
+        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
+        Calendar c = Calendar.getInstance();
+        c.setTime(txtJCalendar.getDate());
+        c.add(Calendar.DATE, Integer.parseInt(buttonGroup.getSelection().getActionCommand().trim()));
+        String data_vencimento = (String) sdf.format(c.getTime());
+        txtDataVencimento.setText(data_vencimento);
+        txtDataVencimento.setEditable(false);
+    }//GEN-LAST:event_txtDataVencimento60ActionPerformed
+
+    private void txtDataVencimentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtDataVencimentoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_txtDataVencimentoActionPerformed
 
     /**
      * @param args the command line arguments
@@ -764,6 +870,7 @@ public class CadastroServico extends javax.swing.JFrame {
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnCadastro;
     private javax.swing.JButton btnVoltar;
+    private javax.swing.ButtonGroup buttonGroup;
     private javax.swing.JFormattedTextField jFormattedTextField1;
     private javax.swing.JFrame jFrame1;
     private javax.swing.JLabel jLabel1;
@@ -780,6 +887,7 @@ public class CadastroServico extends javax.swing.JFrame {
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel20;
     private javax.swing.JLabel jLabel21;
+    private javax.swing.JLabel jLabel22;
     private javax.swing.JLabel jLabel23;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JLabel jLabel4;
@@ -793,6 +901,10 @@ public class CadastroServico extends javax.swing.JFrame {
     private javax.swing.JTextField txtBairro;
     private javax.swing.JFormattedTextField txtCelular;
     private javax.swing.JTextField txtComplemento;
+    private javax.swing.JTextField txtDataVencimento;
+    private javax.swing.JRadioButton txtDataVencimento30;
+    private javax.swing.JRadioButton txtDataVencimento60;
+    private javax.swing.JRadioButton txtDataVencimento90;
     private javax.swing.JTextArea txtDescricao;
     private javax.swing.JTextField txtEndereco;
     private com.toedter.calendar.JDateChooser txtJCalendar;
